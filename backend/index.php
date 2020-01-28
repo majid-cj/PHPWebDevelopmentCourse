@@ -1,16 +1,16 @@
 <?php
-include('backend/db/db.php');
-include('backend/operations/user.php');
+include('db/db.php');
+include('operations/user.php');
+include('operations/product.php');
 
-$db = new Connection("localhost", "root", "", "");
-$db->connect();
-
-$user = new Users($db);
+$connection = new Connection();
+$user = new Users($connection->getconn());
+$product = new Product($connection->getconn());
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET'){
 
 
 }elseif ($_SERVER['REQUEST_METHOD'] == 'POST'){
-
+    $user->login($_POST["phone"], $_POST["password"]);
 }
 ?>

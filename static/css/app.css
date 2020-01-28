@@ -1,0 +1,22 @@
+.login, .signin{
+    margin-left: 30%;
+}
+
+
+.card{
+    width: 210px;
+    height: 200px;
+    margin: 20px;
+    text-align: center;
+}
+
+.card >img{
+    width: 100px;
+    height: 100px;
+    margin-left: 60px;
+}
+
+td >img{
+    width: 75px;
+    height: 75px;
+}

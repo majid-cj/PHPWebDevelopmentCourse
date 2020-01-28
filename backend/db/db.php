@@ -1,31 +1,25 @@
 <?php
 
+include 'config.php';
+
 class Connection{
-    var $host;
-    var $user;
-    var $password;
-    var $port;
+    public $conn ;
+    public $data ;
 
-    var $connect;
-
-    public function __construct($_host, $_user, $_password, $_port){
-        $this->host = $_host;
-        $this->user = $_user;
-        $this->password = $_password;
-        $this->port = $_port;
-    }
-
-    public function connect(){
-        try {
-            $this->connect = mysqli_connect($this->host, $this->user, $this->password, $this->port);
-            $this->createDB();
-        } catch (\Throwable $th) {
-            echo '<div class="alert alert-danger" role="alert">A simple danger alert—check it out!</div>';
+    function __construct(){
+        $this->data = json_decode(file_get_contents('php://input'));
+        if ($this->conn == null){
+            try {
+                $this->conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+                mysqli_set_charset($this->conn, "utf8");
+            } catch (\Throwable $exception) {
+                echo $exception;
+            }
         }
     }
 
-    public function createDB(){
-        $sql = "CREATE DATABASE IF NOT EXISTS store";
-        mysqli_query($this->connect, $sql);
+    public function getconn(){
+        return $this->conn;
     }
 }
+
