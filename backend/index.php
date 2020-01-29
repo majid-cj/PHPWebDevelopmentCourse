@@ -8,9 +8,12 @@ $user = new Users($connection->getconn());
 $product = new Product($connection->getconn());
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET'){
-
-
+    switch($_GET['url']){
+        case 'gettypes':
+            $user->getusertypes();
+            break;
+    }
 }elseif ($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $user->login($_POST["phone"], $_POST["password"]);
+
 }
 ?>

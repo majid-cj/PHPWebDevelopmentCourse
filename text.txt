@@ -1,8 +1,23 @@
-admin
-view => cards
+GET
+the request doesn't have a body/params
+to get or view data from database
+view all products
+view all users
 
 
+POST
+the request have a body/params
+to write in the database or the request holds data
+login
+signin
+add to carts
+create new products
 
 
-user
+PUT
+the request have a body/params
+to update in the database
 
+
+DELETE
+wants to delete from the database

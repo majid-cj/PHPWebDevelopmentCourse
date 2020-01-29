@@ -1,6 +1,7 @@
-var name = document.getElementById("name");
-var password = document.getElementById("password");
-var login = document.getElementById("login");
-var msg = document.getElementById("msg");
-
-login.addEventListener("click", function() {});
+$.ajax({
+  type: "get",
+  url: "http://localhost:8000/backend/index.php?url=gettypes",
+  success: function(response) {
+    console.log(response);
+  }
+});
