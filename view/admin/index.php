@@ -4,7 +4,7 @@ include '../includes/head.php';
 
 <div class="container">
     <div clas="row">
-        <a href="account.php">
+        <a class="col-lg-3" href="account.php">
             <div class="card" >
                 <img src="../../static/image/account.png" class="card-img-top" alt="...">
                 <div class="card-body">
@@ -13,7 +13,7 @@ include '../includes/head.php';
             </div>
         </a>
 
-        <a href="product.php">
+        <a class="col-lg-3" href="product.php">
             <div class="card" >
                 <img src="../../static/image/account.png" class="card-img-top" alt="...">
                 <div class="card-body">
@@ -22,7 +22,7 @@ include '../includes/head.php';
             </div>
         </a>
 
-        <a href="order.php">
+        <a class="col-lg-3" href="order.php">
             <div class="card" >
                 <img src="../../static/image/account.png" class="card-img-top" alt="...">
                 <div class="card-body">

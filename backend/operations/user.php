@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 class Users{
 
     var $connect;
@@ -8,10 +10,10 @@ class Users{
     }
 
     public function getusertypes(){
-        $sql = "SELECT id
-                FROM members";
-        $response = array();
-        if ($stmt = mysqli_prepare($this->connect, $sql)){
+        $sql = "SELECT id, name
+                FROM user_types";
+        $arr = array();
+        if ($stmt = mysqli_prepare($this->connect->getconn(), $sql)){
             $stmt->execute();
             $stmt->store_result();
             if ($stmt->num_rows() > 0){
@@ -21,36 +23,59 @@ class Users{
                         'id' => $id,
                         'type' => $name
                     );
-                    array_push($response, $types);
+                    array_push($arr, $types);
                 }
+                $this->connect->setresponse($arr, FALSE);
             }else{
-                array_push($response, 'there is error');
+                $this->connect->setresponse('no member types');
             }
         }else{
-            array_push($response, 'there is error');
+            $this->connect->setresponse(ERROR_DB_CONNECT);
         }
-        echo json_encode($response, 128);
     }
 
-    public function login($phone, $password){
-        $sql = "SELECT id, phone, password
-                FROM accounts
+    public function login(){
+        $sql = "SELECT id, name, phone, password
+                FROM members
                 WHERE phone = ?";
-        $stmt = mysqli_query($this->connect, $sql);
+        $stmt = mysqli_prepare($this->connect->getconn(), $sql);
+        $stmt->bind_param('s', $this->connect->getdata()->phone);
+        $stmt->execute();
+        $stmt->bind_result($id, $name, $phone, $hash_password);
+        $stmt->store_result();
+        $stmt->fetch();
+        if($stmt->num_rows() > 0){
+            if (password_verify($this->connect->getdata()->password, $hash_password)){
+                $this->connect->setresponse(array(
+                    'id' => $id,
+                    'name' => $name,
+                    'phone' => $phone
+                ), FALSE);
+            }else{
+                $this->connect->setresponse('password is wrong try again !');
+            }
+        }else{
+            $this->connect->setresponse('no user with this phone number');
+        }
+    }
 
-        if($stmt->num_rows > 0){
-            if (password_verify($password, $db_password)){
-
+    public function signup(){
+        if (strlen($this->connect->getdata()->phone) < 10){
+            $this->connect->setresponse('enter a valid phone number');
+        }else{
+            $sql = "INSERT INTO members (user_type, name, phone, password)
+                    VALUE(?, ?, ?, ?)";
+            $hash_password = password_hash($this->connect->getdata()->password, PASSWORD_BCRYPT, array('cost' => 8));
+            $stmt = mysqli_prepare($this->connect->getconn(), $sql);
+            $stmt->bind_param('isss', $this->connect->getdata()->user_type,
+                                    $this->connect->getdata()->name,
+                                    $this->connect->getdata()->phone,
+                                    $hash_password);
+            if ($stmt->execute()){
+                $this->connect->setresponse('signup successfully !', FALSE);
+            }else{
+                $this->connect->setresponse('signup not success');
             }
         }
-    }
-
-    public function signup($name, $phone, $password){
-        $sql = "INSERT INTO account (name, phone, password)
-                VALUE(?, ?, ?)";
-
-        $hash_password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 8));
-
-        mysqli_query($stmt, $sql);
     }
 }
