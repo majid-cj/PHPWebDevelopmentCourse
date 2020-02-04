@@ -40,7 +40,7 @@ class Product{
                     );
                     array_push($arr, $types);
                 }
-                $this->conn->setresponse($arr, FALSE);
+                $this->connect->setresponse($arr, FALSE);
             }else{
                 $this->connect->setresponse(NO_DATA);
             }
@@ -90,8 +90,117 @@ class Product{
     }
 
     public function getproduct(){
-        
+        $sql = "SELECT products.id,
+                        products.name,
+                        category.name,
+                        products.price,
+                        products.description,
+                        products.image
+                FROM
+                    products
+                INNER JOIN category ON products.category = category.id";
+        if($stmt = mysqli_prepare($this->connect->getconn(), $sql)){
+            $stmt->execute();
+            $stmt->store_result();
+            if($stmt->num_rows > 0){
+                $stmt->bind_result($id, $name, $category, $price, $desc, $image);
+                $arr = array();
+                while($stmt->fetch()){
+                    $types = array(
+                        'id' => $id,
+                        'name' => $name,
+                        'category' => $category,
+                        'price' => $price,
+                        'desc' => $desc,
+                        'image' => 'backend/'.$image,
+                    );
+                    array_push($arr, $types);
+                }
+                $this->connect->setresponse($arr, FALSE);
+            }else{
+                $this->connect->setresponse(NO_DATA);
+            }
+        }else{
+            $this->connect->setresponse(ERROR_DB_CONNECT);
+        }
     }
 
-    public function getproductbycategory(){}
+    public function getproductbycategory(){
+        $sql = "SELECT products.id,
+                        products.name,
+                        category.name,
+                        products.price,
+                        products.description,
+                        products.image
+                FROM
+                    products
+                INNER JOIN category ON products.category = category.id
+                AND category.id = ?";
+        if($stmt = mysqli_prepare($this->connect->getconn(), $sql)){
+            $stmt->bind_param('i', $this->connect->getdata()->id);
+            $stmt->execute();
+            $stmt->store_result();
+            if($stmt->num_rows > 0){
+                $stmt->bind_result($id, $name, $category, $price, $desc, $image);
+                $arr = array();
+                while($stmt->fetch()){
+                    $types = array(
+                        'id' => $id,
+                        'name' => $name,
+                        'category' => $category,
+                        'price' => $price,
+                        'desc' => $desc,
+                        'image' => 'backend/'.$image,
+                    );
+                    array_push($arr, $types);
+                }
+                $this->connect->setresponse($arr, FALSE);
+            }else{
+                $this->connect->setresponse(NO_DATA);
+            }
+        }else{
+            $this->connect->setresponse(ERROR_DB_CONNECT);
+        }
+    }
+
+    function searchproduct(){
+        $sql = "SELECT products.id,
+                        products.name,
+                        category.name,
+                        products.price,
+                        products.description,
+                        products.image
+                FROM
+                    products
+                INNER JOIN category ON products.category = category.id
+                WHERE
+                    products.name LIKE ?";
+        if($stmt = mysqli_prepare($this->connect->getconn(), $sql)){
+            $search = "%".$this->connect->getdata()->search."%";
+            $stmt->bind_param('s', $search);
+            $stmt->execute();
+            $stmt->store_result();
+            if($stmt->num_rows > 0){
+                $stmt->bind_result($id, $name, $category, $price, $desc, $image);
+                $arr = array();
+                while($stmt->fetch()){
+                    $types = array(
+                        'id' => $id,
+                        'name' => $name,
+                        'category' => $category,
+                        'price' => $price,
+                        'desc' => $desc,
+                        'image' => 'backend/'.$image,
+                    );
+                    array_push($arr, $types);
+                }
+                $this->connect->setresponse($arr, FALSE);
+            }else{
+                $this->connect->setresponse(NO_DATA);
+            }
+        }else{
+            $this->connect->setresponse(ERROR_DB_CONNECT);
+        }
+    }
 }
+

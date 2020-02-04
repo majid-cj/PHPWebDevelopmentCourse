@@ -34,6 +34,68 @@ class Users{
         }
     }
 
+    function getmembers(){
+        $sql = "SELECT members.id, members.name, members.phone, user_types.name
+                FROM
+                    members
+                INNER JOIN user_types ON members.user_type = user_types.id";
+        if($stmt = mysqli_prepare($this->connect->getconn(), $sql)){
+            $stmt->execute();
+            $stmt->store_result();
+            if($stmt->num_rows > 0){
+                $stmt->bind_result($id, $name, $phone, $type);
+                $arr = array();
+                while($stmt->fetch()){
+                    $members = array(
+                        'id' => $id,
+                        'name' => $name,
+                        'phone' => $phone,
+                        'type' => $type,
+                    );
+                    array_push($arr, $members);
+                }
+                $this->connect->setresponse($arr, FALSE);
+            }else{
+                $this->connect->setresponse(NO_DATA);
+            }
+        }else{
+            $this->connect->setresponse(ERROR_DB_CONNECT);
+        }
+    }
+
+    function searchformembers(){
+        $sql = "SELECT members.id, members.name, members.phone, user_types.name
+                FROM
+                    members
+                INNER JOIN user_types ON members.user_type = user_types.id
+                WHERE
+                    members.phone like ?";
+        if($stmt = mysqli_prepare($this->connect->getconn(), $sql)){
+            $search = "%".$this->connect->getdata()->search."%";
+            $stmt->bind_param('s', $search);
+            $stmt->execute();
+            $stmt->store_result();
+            if($stmt->num_rows > 0){
+                $stmt->bind_result($id, $name, $phone, $type);
+                $arr = array();
+                while($stmt->fetch()){
+                    $members = array(
+                        'id' => $id,
+                        'name' => $name,
+                        'phone' => $phone,
+                        'type' => $type,
+                    );
+                    array_push($arr, $members);
+                }
+                $this->connect->setresponse($arr, FALSE);
+            }else{
+                $this->connect->setresponse(NO_DATA);
+            }
+        }else{
+            $this->connect->setresponse(ERROR_DB_CONNECT);
+        }
+    }
+
     public function login(){
         $sql = "SELECT id, name, phone, password
                 FROM members

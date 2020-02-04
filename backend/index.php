@@ -18,6 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET'){
         case 'getcategories':
             $product->getproductcategory();
             break;
+
+        case 'getproducts':
+            $product->getproduct();
+            break;
+
+        case 'getmembers':
+            $user->getmembers();
+            break;
     }
 }elseif ($_SERVER['REQUEST_METHOD'] == 'POST'){
     switch ($_GET['url']) {
@@ -35,6 +43,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET'){
 
         case 'addproduct':
             $product->addproduct();
+            break;
+
+        case 'getproductsbycategory':
+            $product->getproductbycategory();
+            break;
+
+        case 'searchproduct':
+            $product->searchproduct();
+            break;
+
+        case 'searchformembers':
+            $user->searchformembers();
             break;
 
         default:
